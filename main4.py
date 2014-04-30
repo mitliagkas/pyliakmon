@@ -26,7 +26,7 @@ def runBOI(stream, k,id,arr,allT,nWorkers,doneWithBlock,cond, parentFiles):
             doneWithBlock=doneWithBlock,
             cond=cond,
             k=k,
-            order=3,
+            order=2,
             stream=stream
             )
 

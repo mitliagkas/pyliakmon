@@ -1,6 +1,6 @@
 import numpy as np
 from numpy import linalg as la
-import time
+import time, datetime
 import subprocess 
 from streaming import *
 import cms
@@ -9,8 +9,10 @@ from multiprocessing import Array
 import sys
  
 def runBOI(k,id,sharedQ,sharedR,allT,nWorkers,doneWithBlock,cond):
-    #sys.stderr = open("logs/Worker"+str(id)+".out", "a")
-    boi=ParallelTopic(
+    sys.stderr = open("logs/Worker"+str(id)+".out", "a")
+    stream=cms.PatientStream(ds=id, maxds=nWorkers)
+
+    boi=ParallelBlockOrthogonal(
             id=id,
             sharedQ=sharedQ,
             sharedR=sharedR,
@@ -18,7 +20,7 @@ def runBOI(k,id,sharedQ,sharedR,allT,nWorkers,doneWithBlock,cond):
             doneWithBlock=doneWithBlock,
             cond=cond,
             k=k,
-            stream=cms.PatientStream(ds=id, maxds=nWorkers)
+            stream=stream,
             )
 
     for x in boi:
@@ -29,11 +31,19 @@ def runBOI(k,id,sharedQ,sharedR,allT,nWorkers,doneWithBlock,cond):
     R=np.frombuffer(boi.sharedR.get_obj()).reshape((k,k))
     print R
 
+    #datestring=time.strftime("%Y-%m-%d", time.gmtime()) 
+    #timestring=time.strftime("%H:%M:%S", time.gmtime()) 
+    datestring=time.strftime("%Y-%m-%d %H:%M:%S") 
+
     if id==1:
         print "Saving results to disk"
-        np.savetxt('cmsQTopic.txt',Q)
-        np.savetxt('cmsRTopic.txt',R)
-        np.savetxt('cmsCompTopic.txt',np.dot(Q,np.linalg.cholesky(R)))
+        np.savetxt('results/'+str(datetime.date.today())+'-'+stream.name+'-Q.txt',Q)
+        np.savetxt('results/'+str(datetime.date.today())+'-'+stream.name+'-R.txt',R)
+        np.savetxt('results/'+str(datetime.date.today())+'-'+stream.name+'-Comp.txt',np.dot(Q,np.linalg.cholesky(R)))
+
+        np.savetxt('Q.txt',Q)
+        np.savetxt('R.txt',R)
+        np.savetxt('Comp.txt',np.dot(Q,np.linalg.cholesky(R)))
 
     return
                     
