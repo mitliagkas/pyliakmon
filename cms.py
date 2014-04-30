@@ -5,14 +5,14 @@ import numpy as np
 from streaming import *
 from zipfile import ZipFile
 
-class PatientStream(DataStream):
+class PatientStream(VectorStream):
     def __init__(self, ds=1, maxds=1):
         self._nICDcodes=132
         self._nCPTcodes=128
-        self.p=self._nICDcodes+self._nCPTcodes
+        p=self._nICDcodes+self._nCPTcodes
+        VectorStream.__init__(self, p, sparse=False, delta=1.0)
         self.ds=ds
-        self.delta=1
-        self.sparse=False
+        self.name='CMSPatient'
 
         directory="/var/datasets/cms/"
 

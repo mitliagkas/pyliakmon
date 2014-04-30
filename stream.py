@@ -7,6 +7,7 @@ import select
 class DataStream:
     def __init__(self, n=0):
         self.n=n
+        self.name='DataStream'
 
     def __iter__(self):
         return self
@@ -26,6 +27,7 @@ class VectorStream(DataStream):
         self.p=p
         self.sparse=sparse
         self.delta=delta
+        self.name='VectorStream'
 
         self.t=0
 
