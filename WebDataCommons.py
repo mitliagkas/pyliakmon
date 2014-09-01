@@ -1,12 +1,11 @@
 import csv
 import numpy as np
-import streaming
+import stream
 
-class PLDStream(streaming.SampleStream):
-    def __init__(self, file='/var/datasets/wdc/pld-arc.gz'):
+class PLDStream(stream.VectorStream):
+    def __init__(self, file='/var/datasets/wdc/pld-arc'):
         self.f=open(file,'r')
-        #streaming.SampleStream.__init__(self,p=65133, n=71567)
-        streaming.SampleStream.__init__(self,p=65133, n=69878)
+        stream.VectorStream.__init__(self,p=65133, n=69878)
 
         self.reader=csv.reader(self.f, delimiter='\t')
         self._lastRow=None
@@ -64,7 +63,7 @@ class PLDStream(streaming.SampleStream):
                 ##Proceed
                 ## Get the basic values from the row
                 try:
-                    self._userVector[int(row[1])-1]=float(row[2])
+                    self._userVector[int(row[1])-1]=1
                 except IndexError:
                     print row
                     raise
